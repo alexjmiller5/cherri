@@ -91,8 +91,6 @@ func generateActions() {
 				exit(fmt.Sprintf("Undefined action '%s'", tokenAction.ident))
 			}
 			setCurrentAction(tokenAction.ident, actions[tokenAction.ident])
-			// For rawAction: set overrideIdentifier per-call from the first arg,
-			// so each rawAction compiles with its own identifier (fixes #149).
 			if tokenAction.ident == "rawAction" && len(tokenAction.args) > 0 {
 				currentAction.overrideIdentifier = getArgValue(tokenAction.args[0]).(string)
 			}

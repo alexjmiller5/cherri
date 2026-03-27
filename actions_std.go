@@ -1863,7 +1863,6 @@ func defineRawAction() {
 				validType: Dict,
 			},
 		},
-		check: func(_ []actionArgument, _ *actionDefinition) {},
 		make: func(args []actionArgument) map[string]any {
 			if len(args) == 1 {
 				return map[string]any{}
