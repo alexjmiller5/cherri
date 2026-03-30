@@ -493,6 +493,7 @@ func collectQtyValue(value *any) {
 		{
 			name:      "unit",
 			validType: String,
+			literal:   true,
 		},
 	}}
 

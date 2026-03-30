@@ -1054,9 +1054,15 @@ func makeActionValue(identifier string, arguments []actionArgument) action {
 }
 
 func makeQuantityFieldValue(args []actionArgument) map[string]any {
+	var magnitude = argumentValue(args, 0)
+
+	if args[0].valueType == Variable {
+		magnitude = magnitude.(map[string]any)["Value"]
+	}
+
 	return map[string]any{
 		"Value": map[string]any{
-			"Magnitude": argumentValue(args, 0),
+			"Magnitude": magnitude,
 			"Unit":      argumentValue(args, 1),
 		},
 		"WFSerializationType": "WFQuantityFieldValue",
