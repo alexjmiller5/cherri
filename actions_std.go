@@ -893,22 +893,7 @@ var actions = map[string]*actionDefinition{
 			},
 		},
 		check: replaceAppIDs,
-		make: func(args []actionArgument) map[string]any {
-			if len(args) == 0 {
-				return map[string]any{}
-			}
-			if args[0].valueType != Variable {
-				return map[string]any{
-					"WFApp": argumentValue(args, 0),
-				}
-			}
-
-			return map[string]any{
-				"WFApp": map[string]any{
-					"BundleIdentifier": argumentValue(args, 0),
-				},
-			}
-		},
+		make:  makeAllAppsAction,
 		addParams: func(_ []actionArgument) map[string]any {
 			return map[string]any{
 				"WFHideAppMode": "All Apps",
@@ -970,20 +955,7 @@ var actions = map[string]*actionDefinition{
 			},
 		},
 		check: replaceAppIDs,
-		make: func(args []actionArgument) (params map[string]any) {
-			if len(args) == 0 {
-				return map[string]any{}
-			}
-
-			params = make(map[string]any)
-			if args[0].valueType != Variable {
-				params["WFAppsExcept"] = apps(args)
-			} else {
-				params["WFAppsExcept"] = argumentValue(args, 0)
-			}
-
-			return
-		},
+		make:  makeAllAppsAction,
 		addParams: func(_ []actionArgument) map[string]any {
 			return map[string]any{
 				"WFQuitAppMode": "All Apps",
@@ -1049,24 +1021,13 @@ var actions = map[string]*actionDefinition{
 			},
 		},
 		check: replaceAppIDs,
-		make: func(args []actionArgument) (params map[string]any) {
-			params = map[string]any{
+		addParams: func(args []actionArgument) map[string]any {
+			return map[string]any{
 				"WFQuitAppMode":      "All Apps",
 				"WFAskToSaveChanges": false,
 			}
-
-			if len(args) == 0 {
-				return params
-			}
-
-			if args[0].valueType != Variable {
-				params["WFAppsExcept"] = apps(args)
-			} else {
-				params["WFAppsExcept"] = argumentValue(args, 0)
-			}
-
-			return
 		},
+		make: makeAllAppsAction,
 		decomp: func(action *ShortcutAction) (arguments []string) {
 			return decompAppAction("WFAppsExcept", action)
 		},
@@ -2216,6 +2177,22 @@ func replaceAppIDs(args []actionArgument, _ *actionDefinition) {
 			args[a].value = replaceAppID(id)
 		}
 	}
+}
+
+func makeAllAppsAction(args []actionArgument) (params map[string]any) {
+	if len(args) == 0 {
+		return map[string]any{}
+	}
+
+	params = make(map[string]any)
+
+	if args[0].valueType != Variable {
+		params["WFAppsExcept"] = apps(args)
+	} else {
+		params["WFAppsExcept"] = argumentValue(args, 0)
+	}
+
+	return
 }
 
 func decompAppAction(key string, action *ShortcutAction) (arguments []string) {
