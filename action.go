@@ -86,9 +86,9 @@ type actionDefinition struct {
 	overrideIdentifier string
 	parameters         []parameterDefinition
 	check              checkFunc
-	setParams          map[string]any // setParams allows for adding parameters not based on arguments without affecting automatic handling.
 	makeParams         paramsFunc     // makeParams overrides automatic handling of arguments for custom logic based on the arguments collected.
-	appendParams       paramsFunc     // appendParams allows for additional parameters to be added based on arguments without disabling automatic handling.
+	appendParams       paramsFunc     // appendParams allows for adding additional parameters based on arguments without disabling automatic handling.
+	setParams          map[string]any // setParams allows for adding additional parameters not based on arguments without affecting automatic handling.
 	decomp             func(action *ShortcutAction) (arguments []string)
 	appIntent          appIntent
 	outputType         tokenType
