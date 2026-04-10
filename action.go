@@ -227,6 +227,7 @@ func getActionParameters(arguments []actionArgument) map[string]any {
 	}
 	if currentAction.make != nil {
 		maps.Copy(params, currentAction.make(arguments))
+		return params
 	}
 	if currentAction.parameters != nil {
 		var argumentsSize = len(arguments)
