@@ -825,10 +825,6 @@ var actions = map[string]*actionDefinition{
 			replaceAppIDs(args, definition)
 		},
 		addParams: func(args []actionArgument) map[string]any {
-			if len(args) == 0 {
-				return map[string]any{}
-			}
-
 			if args[0].valueType == Variable {
 				return map[string]any{
 					"WFSelectedApp": argumentValue(args, 0),
@@ -898,6 +894,9 @@ var actions = map[string]*actionDefinition{
 		},
 		check: replaceAppIDs,
 		make: func(args []actionArgument) map[string]any {
+			if len(args) == 0 {
+				return map[string]any{}
+			}
 			if args[0].valueType != Variable {
 				return map[string]any{
 					"WFApp": argumentValue(args, 0),
@@ -972,6 +971,10 @@ var actions = map[string]*actionDefinition{
 		},
 		check: replaceAppIDs,
 		make: func(args []actionArgument) (params map[string]any) {
+			if len(args) == 0 {
+				return map[string]any{}
+			}
+
 			params = make(map[string]any)
 			if args[0].valueType != Variable {
 				params["WFAppsExcept"] = apps(args)
@@ -1052,6 +1055,10 @@ var actions = map[string]*actionDefinition{
 				"WFAskToSaveChanges": false,
 			}
 
+			if len(args) == 0 {
+				return params
+			}
+
 			if args[0].valueType != Variable {
 				params["WFAppsExcept"] = apps(args)
 			} else {
@@ -1110,10 +1117,6 @@ var actions = map[string]*actionDefinition{
 			}
 		},
 		addParams: func(args []actionArgument) map[string]any {
-			if len(args) == 0 {
-				return map[string]any{}
-			}
-
 			var params = make(map[string]any)
 			if args[0].valueType == Variable {
 				params["WFPrimaryAppIdentifier"] = argumentValue(args, 0)
@@ -1166,10 +1169,6 @@ var actions = map[string]*actionDefinition{
 			},
 		},
 		addParams: func(args []actionArgument) map[string]any {
-			if len(args) == 0 {
-				return map[string]any{}
-			}
-
 			return map[string]any{
 				"target": map[string]any{
 					"title": argumentValue(args, 0),
