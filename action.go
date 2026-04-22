@@ -570,8 +570,26 @@ func generateActionDefinition(focus parameterDefinition, showEnums bool) string 
 	definition.WriteRune('\n')
 	definition.WriteString(generateActionDoc())
 	definition.WriteString(generateActionCode(focus, showEnums))
+	definition.WriteString(generateActionPlatform())
 
 	return definition.String()
+}
+
+func generateActionPlatform() (platformStr string) {
+	var platform string
+	if currentAction.nonMacOnly {
+		platform = "iOS/iPadOS"
+	} else if currentAction.macOnly {
+		platform = "macOS"
+	}
+	if platform != "" {
+		if args.Using("no-ansi") {
+			platformStr = fmt.Sprintf("\n\n**Only supported on %s.**", platform)
+		} else {
+			platformStr = ansi(fmt.Sprintf("\n\nOnly supported on %s.", platform), yellow)
+		}
+	}
+	return
 }
 
 func generateActionCode(focus parameterDefinition, showEnums bool) string {
@@ -603,14 +621,6 @@ func generateActionCode(focus parameterDefinition, showEnums bool) string {
 
 	if args.Using("no-ansi") {
 		actionCode.WriteString("\n```")
-	}
-
-	if !args.Using("debug") {
-		if currentAction.nonMacOnly {
-			actionCode.WriteString(ansi("\n\nNote: iOS/iPadOS only", yellow))
-		} else if currentAction.macOnly {
-			actionCode.WriteString(ansi("\n\nNote: macOS only", yellow))
-		}
 	}
 
 	return actionCode.String()
