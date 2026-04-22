@@ -940,10 +940,10 @@ func collectVersionLimitsDefinition() (minVersion float64, maxVersion float64) {
 func collectActionDefinition(until rune) (identifier string, arguments []parameterDefinition, outputType tokenType) {
 	identifier = collectIdentifier()
 	if _, found := functions[identifier]; found {
-		parserError(fmt.Sprintf("Duplication declaration of function '%s()'", identifier))
+		parserError(fmt.Sprintf("Duplicate declaration of function '%s()'", identifier))
 	}
 	if _, found := actions[identifier]; found {
-		parserError(fmt.Sprintf("Duplication declaration of action '%s()'", identifier))
+		parserError(fmt.Sprintf("Duplicate declaration of action '%s()'", identifier))
 	}
 
 	if next(1) != ')' {

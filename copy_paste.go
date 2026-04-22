@@ -55,7 +55,7 @@ func collectCopy() {
 	var identifier = collectIdentifier()
 
 	if _, found := pasteables[identifier]; found {
-		parserError(fmt.Sprintf("Duplication declaration of copy/paste '%s'", identifier))
+		parserError(fmt.Sprintf("Duplicate declaration of copy/paste '%s'", identifier))
 	}
 
 	advanceUntil('{')
