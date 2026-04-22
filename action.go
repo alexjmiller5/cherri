@@ -856,7 +856,7 @@ func collectDefinedAction() {
 
 	advance()
 
-	var addParams = collectAdditionalParams()
+	var setParams = collectAdditionalParams()
 
 	lineRef.replaceLines()
 
@@ -865,7 +865,7 @@ func collectDefinedAction() {
 		overrideIdentifier: overrideIdentifier,
 		parameters:         arguments,
 		outputType:         outputType,
-		appendParams:       addParams,
+		setParams:          setParams,
 		defaultAction:      defaultAction,
 		macOnly:            macOnlyAction,
 		nonMacOnly:         nonMacOnlyAction,
@@ -875,14 +875,12 @@ func collectDefinedAction() {
 	}
 }
 
-func collectAdditionalParams() (function paramsFunc) {
+func collectAdditionalParams() (params map[string]interface{}) {
 	if char == '{' {
 		advance()
 		var dict = collectDictionary()
 		handleRawParams(dict.(map[string]interface{}))
-		return func(args []actionArgument) map[string]any {
-			return dict.(map[string]any)
-		}
+		return dict.(map[string]interface{})
 	}
 
 	return
