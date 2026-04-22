@@ -2465,6 +2465,14 @@ var toggleSetActions = map[string]actionDefinition{
 			},
 		},
 	},
+	"OrientationLock": {
+		doc: selfDoc{
+			title:    "Orientation Lock",
+			category: "device",
+		},
+		identifier: "orientationlock.set",
+		nonMacOnly: true,
+	},
 }
 
 // defineToggleSetActions automates the creation of actions which simply toggle and set a state in the same format.
