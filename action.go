@@ -597,7 +597,7 @@ func generateActionCode(focus parameterDefinition, showEnums bool) string {
 		actionCode.WriteString(fmt.Sprintf(": %s", ansi(string(currentAction.outputType), magenta)))
 	}
 
-	if args.Using("debug") && currentAction.appendParams != nil {
+	if args.Using("debug") && (currentAction.appendParams != nil || currentAction.setParams != nil) {
 		actionCode.WriteString(generateActionAdditionalParams())
 	}
 
@@ -628,16 +628,20 @@ func generateActionArguments(focus parameterDefinition) (arguments []string) {
 }
 
 func generateActionAdditionalParams() string {
-	var addParams = currentAction.appendParams([]actionArgument{})
+	var additionalParams = make(map[string]any)
 	if len(currentAction.setParams) != 0 {
-		maps.Copy(addParams, currentAction.setParams)
+		maps.Copy(additionalParams, currentAction.setParams)
 	}
-	if len(addParams) != 0 {
-		var jsonBytes, jsonErr = json.MarshalIndent(addParams, strings.Repeat("\t", tabLevel), "\t")
-		handle(jsonErr)
-		return fmt.Sprintf(" %s", string(jsonBytes))
+	if currentAction.appendParams != nil {
+		var appendedParams = currentAction.appendParams([]actionArgument{})
+		if len(appendedParams) != 0 {
+			maps.Copy(additionalParams, appendedParams)
+		}
 	}
-	return ""
+
+	var jsonBytes, jsonErr = json.MarshalIndent(additionalParams, strings.Repeat("\t", tabLevel), "\t")
+	handle(jsonErr)
+	return ansi(fmt.Sprintf(" %s", string(jsonBytes)), green)
 }
 
 func generateActionDoc() string {
