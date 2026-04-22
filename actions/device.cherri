@@ -38,6 +38,12 @@ action v17 reboot() {
 // [Doc]: Vibrate Device: Vibrate the device. Only applies to Apple devices with the haptic engine.
 action !mac vibrate()
 
+// [Doc]: Show Control Center: Open the control center on the device.
+action 'com.apple.ShortcutsActions.ShowControlCenterAction' showControlCenter()
+
+// [Doc]: Set Multitasking Mode
+action v26 'com.apple.ShortcutsActions.SetMultitaskingModeAction' setMultitaskingMode(bool automaticallyShowAndHideDock = true)
+
 // [Doc]: [Battery] Get Battery Level: Get the current level of charge of the device battery.
 action default getBatteryLevel()
 
