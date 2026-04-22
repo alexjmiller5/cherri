@@ -2473,6 +2473,15 @@ var toggleSetActions = map[string]actionDefinition{
 		identifier: "orientationlock.set",
 		nonMacOnly: true,
 	},
+	"Hotspot": {
+		doc: selfDoc{
+			title:       "Personal Hotspot",
+			category:    "device",
+			subcategory: "Personal Hotspot",
+		},
+		identifier: "personalhotspot.set",
+		nonMacOnly: true,
+	},
 }
 
 // defineToggleSetActions automates the creation of actions which simply toggle and set a state in the same format.
