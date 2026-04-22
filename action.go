@@ -605,6 +605,14 @@ func generateActionCode(focus parameterDefinition, showEnums bool) string {
 		actionCode.WriteString("\n```")
 	}
 
+	if !args.Using("debug") {
+		if currentAction.nonMacOnly {
+			actionCode.WriteString(ansi("\n\nNote: iOS/iPadOS only", yellow))
+		} else if currentAction.macOnly {
+			actionCode.WriteString(ansi("\n\nNote: macOS only", yellow))
+		}
+	}
+
 	return actionCode.String()
 }
 
