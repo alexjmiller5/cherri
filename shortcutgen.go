@@ -367,7 +367,11 @@ func inputValue(name string, varUUID string) WFTextTokenAttachment {
 	}
 }
 
-func variableValue(variable varValue) WFTextTokenAttachment {
+func variableValue(variable varValue) any {
+	return variableValueWithSerialization(variable, "WFTextTokenAttachment")
+}
+
+func variableValueWithSerialization(variable varValue, serializationType string) any {
 	var identifier = variable.value.(string)
 	var variableReference varValue
 	var aggrandizements []Aggrandizement
@@ -426,9 +430,13 @@ func variableValue(variable varValue) WFTextTokenAttachment {
 		varValue.Aggrandizements = aggrandizements
 	}
 
+	if serializationType == "" {
+		return varValue
+	}
+
 	return WFTextTokenAttachment{
 		Value:               varValue,
-		WFSerializationType: "WFTextTokenAttachment",
+		WFSerializationType: serializationType,
 	}
 }
 
@@ -912,7 +920,7 @@ func makeConditions(wfConditions *WFConditions) WFContentPredicateTableTemplate 
 			WFCondition: condition.condition,
 			WFInput: WFInputVariable{
 				Type:     "Variable",
-				Variable: variableValue(condition.arguments[0].value.(varValue)),
+				Variable: variableValue(condition.arguments[0].value.(varValue)).(WFTextTokenAttachment),
 			},
 		}
 

@@ -1079,10 +1079,11 @@ func makeActionValue(identifier string, arguments []actionArgument) action {
 }
 
 func makeQuantityFieldValue(args []actionArgument) map[string]any {
-	var magnitude = argumentValue(args, 0)
-
+	var magnitude any
 	if args[0].valueType == Variable {
-		magnitude = magnitude.(map[string]any)["Value"]
+		magnitude = variableValueWithSerialization(args[0].value.(varValue), "")
+	} else {
+		magnitude = argumentValue(args, 0)
 	}
 
 	return map[string]any{
