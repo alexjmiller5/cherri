@@ -2472,6 +2472,7 @@ var toggleSetActions = map[string]actionDefinition{
 		},
 		identifier: "orientationlock.set",
 		nonMacOnly: true,
+		setKey:     "OnValue",
 	},
 	"Hotspot": {
 		doc: selfDoc{
