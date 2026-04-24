@@ -197,4 +197,5 @@ func resetParser() {
 	menus = map[string][]varValue{}
 	uuids = map[string]string{}
 	functions = map[string]*function{}
+	shortcut = Shortcut{}
 }
