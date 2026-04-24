@@ -63,3 +63,9 @@ action 'getipaddress' isOnline() {
 	"WFIPAddressSourceOption": "External",
     "WFIPAddressTypeOption": "IPv4"
 }
+
+// [Doc]: [HotSpot] Get Hotspot Password: Get the password for your personal hotspot.
+action !mac 'personalhotspot.password.get' getHotspotPassword(): text
+
+// [Doc]: [HotSpot] Set Personal Hotspot Password: Update the password to your personal hotspot.
+action !mac 'personalhotspot.password.set' setHotspotPassword(text newPassword: 'WFInput')

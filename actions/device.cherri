@@ -41,9 +41,6 @@ action !mac vibrate()
 // [Doc]: Show Control Center: Open the control center on the device.
 action 'com.apple.ShortcutsActions.ShowControlCenterAction' showControlCenter()
 
-// [Doc]: Set Multitasking Mode
-action v26 'com.apple.ShortcutsActions.SetMultitaskingModeAction' setMultitaskingMode(bool automaticallyShowAndHideDock = true)
-
 // [Doc]: [Battery] Get Battery Level: Get the current level of charge of the device battery.
 action default getBatteryLevel()
 
@@ -76,9 +73,3 @@ enum usageDuration {
 
 // [Doc]: [Screen Time] Get Website & App Activity
 action 'com.apple.intelligenceplatform.IntelligencePlatform.IntelligencePlatformDataActionsAppIntentsExtension.CalculateAppUsageIntent' getDeviceUsage(deviceUsageType usageType: 'activityType' = "all", variable ?device: 'selectedDevice', usageDuration during: 'during' = "today", text ?startTime: 'startTime', text ?startTime: 'endTime')
-
-// [Doc]: [HotSpot] Get Hotspot Password: Get the password for your personal hotspot.
-action !mac 'personalhotspot.password.get' getHotspotPassword(): text
-
-// [Doc]: [HotSpot] Set Personal Hotspot Password: Update the password to your personal hotspot.
-action !mac 'personalhotspot.password.set' setHotspotPassword(text newPassword: 'WFInput')
