@@ -16,9 +16,9 @@ Cherri is a compiled DSL that targets Apple Shortcuts plist XML. A `.cherri` sou
 # Build
 go build ./...
 
-# Run compiler on a file
+# Run compiler on a file — filename MUST be the first argument
 go run . file.cherri
-go run . --debug file.cherri      # also writes .plist and preprocessed file
+go run . file.cherri --debug      # also writes .plist and preprocessed file
 
 # Tests
 go test -run TestCherriNoSign     # compile all tests/*.cherri files, skip signing (use on non-macOS)
@@ -32,6 +32,8 @@ cherri --glyph=glyphName
 ```
 
 The `--debug` flag is essential during development: it prints parse state, outputs a `.plist` for inspection, and writes a `_processed.cherri` showing the source after pre-processing (includes, function header injection).
+
+**Debugging caveat:** To test a file individually with `--debug` and inspect its plist, you must temporarily add any required action `#include` statements directly to that test file. The standard library includes are only injected automatically during the full test suite run, not when compiling a single file directly.
 
 Code style: use `var x = ...` (not `:=`) except in `for`/`if`/`switch` init statements. Types are declared without values (`var x string`). Comments explain *why*, not *what*.
 
