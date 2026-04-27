@@ -35,6 +35,7 @@ type function struct {
 	definition actionDefinition
 	body       string
 	used       bool
+	callCount  int // incremented each call to produce unique _cherri_call variable names
 }
 
 // functions is a map of all the functions that have been defined.
@@ -240,7 +241,8 @@ func makeFunctionRef(identifier *string) any {
 		checkAction()
 	}
 
-	var variableIdentifier = fmt.Sprintf("_%s_cherri_call", *identifier)
+	function.callCount++
+	var variableIdentifier = fmt.Sprintf("_%s_cherri_call_%d", *identifier, function.callCount)
 	var functionCall = makeFunctionCall(identifier, &arguments)
 	insertReference(variableIdentifier, Dict, functionCall, true)
 
@@ -257,7 +259,7 @@ func makeFunctionRef(identifier *string) any {
 	})
 
 	if function.definition.outputType != "" {
-		var outputIdentifier = fmt.Sprintf("_%s_cherri_call_output", *identifier)
+		var outputIdentifier = fmt.Sprintf("_%s_cherri_call_%d_output", *identifier, function.callCount)
 		insertReference(outputIdentifier, Action, runSelfAction, true)
 
 		return coerceOutputValue(outputIdentifier, function.definition.outputType, runSelfAction)
