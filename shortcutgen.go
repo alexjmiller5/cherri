@@ -110,7 +110,7 @@ func generateActions() {
 
 func makeCommentAction(comment string) {
 	if args.Using("comments") {
-		addStdAction("comment", &map[string]any{
+		addStdAction("comment", map[string]any{
 			"WFCommentActionText": comment,
 		})
 	}
@@ -125,11 +125,11 @@ func makeVariableAction(t *token) {
 
 	if t.typeof != Variable {
 		if variables[t.ident].valueType != Arr {
-			addStdAction("setvariable", &setVariableParams)
+			addStdAction("setvariable", setVariableParams)
 			return
 		}
 
-		addStdAction("appendvariable", &setVariableParams)
+		addStdAction("appendvariable", setVariableParams)
 		return
 	}
 
@@ -138,7 +138,7 @@ func makeVariableAction(t *token) {
 			return
 		}
 	}
-	addStdAction("setvariable", &setVariableParams)
+	addStdAction("setvariable", setVariableParams)
 
 	if t.valueType == Arr {
 		makeArrayVariable(t)
@@ -327,14 +327,14 @@ func variableValueModifier(token *token, reference *WFActionReference) {
 	}
 }
 
-func attachReferenceToParams(params map[string]any, reference *WFActionReference) *map[string]any {
+func attachReferenceToParams(params map[string]any, reference *WFActionReference) map[string]any {
 	if reference.CustomOutputName != "" {
 		params["CustomOutputName"] = reference.CustomOutputName
 	}
 	if reference.UUID != "" {
 		params["UUID"] = reference.UUID
 	}
-	return &params
+	return params
 }
 
 func inputValue(name string, varUUID string) WFTextTokenAttachment {
@@ -821,7 +821,7 @@ func makeArrayVariable(t *token) {
 			value:     value,
 		}, &itemIdent, &UUID)
 
-		addStdAction("appendvariable", &map[string]any{
+		addStdAction("appendvariable", map[string]any{
 			"WFInput":        inputValue(itemIdent, UUID),
 			"WFVariableName": t.ident,
 		})
@@ -865,7 +865,7 @@ func makeConditionalAction(t *token) {
 		conditionalParams["WFControlFlowMode"] = endStatement
 	}
 
-	addStdAction("conditional", &conditionalParams)
+	addStdAction("conditional", conditionalParams)
 }
 
 var filterTemplates []WFConditionParam
@@ -1035,11 +1035,11 @@ func makeMenuAction(t *token) {
 		menuParams["WFMenuItems"] = menuItems
 	}
 
-	addStdAction("choosefrommenu", &menuParams)
+	addStdAction("choosefrommenu", menuParams)
 }
 
 func makeMenuItemAction(t *token) {
-	addStdAction("choosefrommenu", &map[string]any{
+	addStdAction("choosefrommenu", map[string]any{
 		"GroupingIdentifier": t.ident,
 		"WFControlFlowMode":  statementPart,
 		"WFMenuItemAttributedTitle": paramValue(actionArgument{
@@ -1072,7 +1072,7 @@ func makeRepeatAction(t *token) {
 		}, Integer)
 	}
 
-	addStdAction("repeat.count", &repeatParams)
+	addStdAction("repeat.count", repeatParams)
 }
 
 func makeRepeatEachAction(t *token) {
@@ -1094,7 +1094,7 @@ func makeRepeatEachAction(t *token) {
 		}, Integer)
 	}
 
-	addStdAction("repeat.each", &repeatEachParams)
+	addStdAction("repeat.each", repeatEachParams)
 }
 
 type WFQuestion struct {
