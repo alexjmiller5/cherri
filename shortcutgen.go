@@ -659,6 +659,8 @@ func paramValue(arg actionArgument, handleAs tokenType) any {
 		}
 	case Quantity:
 		return makeQuantityFieldValue(arg.value.([]actionArgument))
+	case RawString:
+		return arg.value.(string)
 	default:
 		return attachmentValues(arg.value.(string))
 	}
