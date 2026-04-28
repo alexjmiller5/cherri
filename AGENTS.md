@@ -131,3 +131,24 @@ The test runner calls `compile()` which calls `main()`, so `os.Args[1]` is set t
 **Format correctness caveat:** `TestCherriNoSign` only verifies that compilation does not panic — it does not validate plist format. Shortcuts signing (`TestCherri` on macOS) will fail if the plist is structurally invalid, making it a stronger format check. Even a successful sign is not sufficient on its own: the resulting Shortcut must be manually opened and run in Shortcuts to confirm it behaves correctly. Automated tests cannot substitute for this manual verification step.
 
 **Sequential test isolation:** The test functions are not designed to run sequentially in the same process. The global `actions` map and related state accumulate across test functions, so running `go test` (all tests together) may produce failures that do not occur in CI. Always run tests individually with `-run`, matching how the GitLab pipeline executes them.
+
+## Feature Verification Against Shortcuts Plist
+
+A signed Shortcut is necessary but not sufficient to confirm correct behavior. The authoritative source of truth for how any action or parameter should be structured is the plist XML produced by the Shortcuts app itself.
+
+**Workflow:** Build the equivalent Shortcut in the Shortcuts app, share it via iCloud, then retrieve its canonical plist to compare against Cherri's output. Use `--debug` (`-d`) to make Cherri emit its own plist for the comparison, and `--output=` (`-o=`) to control where the compiled `.shortcut` file is written. Run `go run . --help` for the full list of CLI flags.
+
+**Fetching a Shortcuts iCloud plist:**
+```bash
+# Given a share URL like https://www.icloud.com/shortcuts/{identifier}
+# Replace /shortcuts/ with /shortcuts/api/records/ to get the metadata JSON
+curl "https://www.icloud.com/shortcuts/api/records/{identifier}" | jq '.fields.shortcut.value.downloadURL'
+
+# Download the binary plist from the returned URL
+curl -L "{downloadURL}" -o reference.shortcut
+
+# Convert binary plist to readable XML (macOS)
+plutil -convert xml1 reference.shortcut -o reference.plist
+```
+
+When implementing or debugging a feature, obtain the reference plist for that action type and align Cherri's generated plist structure to match. Any structural difference is a bug — the Shortcuts app's output defines correct behavior, not assumptions or prior output.
