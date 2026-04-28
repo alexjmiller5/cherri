@@ -553,8 +553,13 @@ func decompBasicExpression(action *ShortcutAction) {
 }
 
 func decompExpression(action *ShortcutAction) {
-	var input = action.WFWorkflowActionParameters["Input"].(map[string]interface{})
-	var expression = strings.Trim(decompValue(input["Value"]), "\"")
+	var raw = action.WFWorkflowActionParameters["Input"]
+	var expression string
+	if s, ok := raw.(string); ok {
+		expression = s
+	} else {
+		expression = strings.Trim(decompValue(raw.(map[string]interface{})["Value"]), "\"")
+	}
 	var varRegex = regexp.MustCompile(`{(.*?)}`)
 	currentVariableValue = varRegex.ReplaceAllString(expression, "$1")
 
