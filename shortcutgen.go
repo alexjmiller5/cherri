@@ -91,7 +91,7 @@ func generateActions() {
 			}
 			setCurrentAction(tokenAction.ident, actions[tokenAction.ident])
 			if tokenAction.ident == "rawAction" && len(tokenAction.args) > 0 {
-				currentAction.overrideIdentifier = getArgValue(tokenAction.args[0]).(string)
+				currentAction.definition.overrideIdentifier = getArgValue(tokenAction.args[0]).(string)
 			}
 			makeAction(tokenAction.args, &WFActionReference{})
 		case Repeat:
@@ -610,11 +610,11 @@ func collectInlineVariables(str *string) (noVarString string) {
 
 func argumentValue(args []actionArgument, idx int) any {
 	var actionParameter parameterDefinition
-	if len(currentAction.parameters) <= idx {
+	if len(currentAction.definition.parameters) <= idx {
 		// First parameter is likely infinite
-		actionParameter = currentAction.parameters[0]
+		actionParameter = currentAction.definition.parameters[0]
 	} else {
-		actionParameter = currentAction.parameters[idx]
+		actionParameter = currentAction.definition.parameters[idx]
 	}
 	var arg actionArgument
 	if len(args) <= idx {

@@ -446,8 +446,8 @@ func collectColorValue(value *any) {
 	advance()
 	saveCurrentAction()
 
-	currentActionIdentifier = "color"
-	currentAction = actionDefinition{parameters: []parameterDefinition{
+	currentAction.identifier = "color"
+	currentAction.definition = actionDefinition{parameters: []parameterDefinition{
 		{
 			name:         "red",
 			validType:    Float,
@@ -487,9 +487,8 @@ func collectQtyValue(value *any) {
 	advance()
 	saveCurrentAction()
 
-	currentActionIdentifier = "qty"
-	currentArgumentsSize = 2
-	currentAction = actionDefinition{parameters: []parameterDefinition{
+	currentAction.identifier = "qty"
+	currentAction.definition = actionDefinition{parameters: []parameterDefinition{
 		{
 			name:      "value",
 			validType: Integer,
@@ -663,7 +662,7 @@ func collectEnumeration() {
 
 	var identifier = collectIdentifier()
 	if enumerations[identifier] != nil {
-		currentAction.parameters = []parameterDefinition{
+		currentAction.definition.parameters = []parameterDefinition{
 			{enum: identifier},
 		}
 		parserError(fmt.Sprintf("Duplicate enumeration '%s'\n\n%s", identifier, generateActionParamEnums(parameterDefinition{})))
@@ -698,7 +697,7 @@ func collectEnumeration() {
 }
 
 func collectArguments() (arguments []actionArgument) {
-	var params = currentAction.parameters
+	var params = currentAction.definition.parameters
 	var paramsSize = len(params)
 	var argIndex = 0
 	var param parameterDefinition
@@ -1687,8 +1686,7 @@ func collectAction(identifier *string) (value action) {
 	setCurrentAction(*identifier, actions[*identifier])
 
 	var arguments = collectArguments()
-	currentArguments = arguments
-	currentArgumentsSize = len(currentArguments)
+	currentAction.arguments = arguments
 
 	checkAction()
 	value = makeActionValue(*identifier, arguments)

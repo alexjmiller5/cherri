@@ -236,8 +236,8 @@ func makeFunctionRef(identifier *string) any {
 	if paramsSize != 0 {
 		advance()
 		arguments = collectArguments()
+		currentAction.arguments = arguments
 
-		currentArgumentsSize = len(arguments)
 		checkAction()
 	}
 

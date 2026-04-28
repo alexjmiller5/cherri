@@ -74,7 +74,7 @@ func decompile(b []byte) {
 // mapIdentifiers creates a map of variable identifiers and UUIDs that are assigned throughout the Shortcut.
 func mapIdentifiers() {
 	for _, action := range shortcut.WFWorkflowActions {
-		currentActionIdentifier = action.WFWorkflowActionIdentifier
+		currentAction.identifier = action.WFWorkflowActionIdentifier
 		var params = action.WFWorkflowActionParameters
 		if action.WFWorkflowActionIdentifier == SetVariableIdentifier || action.WFWorkflowActionIdentifier == AppendVariableIdentifier {
 			continue
@@ -124,7 +124,7 @@ func mapControlFlowOutputs() {
 // Map out variables in the Shortcut and their UUIDs for later checks.
 func mapVariables() {
 	for _, action := range shortcut.WFWorkflowActions {
-		currentActionIdentifier = action.WFWorkflowActionIdentifier
+		currentAction.identifier = action.WFWorkflowActionIdentifier
 		var params = action.WFWorkflowActionParameters
 		if action.WFWorkflowActionIdentifier == SetVariableIdentifier || action.WFWorkflowActionIdentifier == AppendVariableIdentifier {
 			var varName = params["WFVariableName"].(string)
