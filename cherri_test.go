@@ -209,4 +209,9 @@ func resetParser() {
 	decompilingDictionary = false
 	macDefinition = false
 	setMacDefinition = false
+	appIds = nil
+	pasteables = nil
+	usedEnums = nil
+	usingFunctions = false
+	currentCategory = ""
 }
