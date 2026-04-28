@@ -724,10 +724,16 @@ func makeDictionaryItem(key string, value any) WFDictionaryFieldValueItem {
 		}
 	case map[string]interface{}:
 		itemType = itemTypeDict
+		// Shortcuts wraps nested dict items in two WFDictionaryFieldValue layers:
+		// the outer marks the value type, the inner holds the items. Top-level
+		// dict actions use only one layer (handled by makeDictionaryValue).
 		wfValue = WFDictionaryFieldValue{
 			WFSerializationType: "WFDictionaryFieldValue",
-			Value: WFDictionaryFieldValueWrapper{
-				WFDictionaryFieldValueItems: makeDictionary(v),
+			Value: WFDictionaryFieldValue{
+				WFSerializationType: "WFDictionaryFieldValue",
+				Value: WFDictionaryFieldValueWrapper{
+					WFDictionaryFieldValueItems: makeDictionary(v),
+				},
 			},
 		}
 	case bool:

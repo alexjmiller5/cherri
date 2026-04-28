@@ -105,8 +105,8 @@ type WFTextTokenStringValue struct {
 }
 
 type WFDictionaryFieldValue struct {
-	Value               WFDictionaryFieldValueWrapper `plist:",omitempty"`
-	WFSerializationType string                        `plist:",omitempty"`
+	Value               any    `plist:",omitempty"`
+	WFSerializationType string `plist:",omitempty"`
 }
 
 type WFDictionaryFieldValueWrapper struct {
