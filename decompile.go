@@ -522,7 +522,12 @@ func decompNumberValue(action *ShortcutAction) (nonLiteral bool) {
 		}
 		handle(convErr)
 	} else {
-		number = int(value.(uint64))
+		switch v := value.(type) {
+		case uint64:
+			number = int(v)
+		case float64:
+			number = v
+		}
 	}
 
 	currentVariableValue = decompValue(number)
