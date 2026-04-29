@@ -268,7 +268,7 @@ func addAction(identifier string, params map[string]any) {
 }
 
 // checkAction checks the parsed arguments provided for an action and if it can be used based on definitions set.
-// If an action has a check function defined this will be called and provided the parsed arguments.
+// If an action has a check function defined, this will be called and provided the parsed arguments.
 func checkAction() {
 	if len(currentAction.definition.parameters) > 0 {
 		checkRequiredArgs()
