@@ -305,3 +305,87 @@ plutil -convert xml1 reference.shortcut -o reference.plist
 ```
 
 When implementing or debugging a feature, obtain the reference plist for that action type and align Cherri's generated plist structure to match. Any structural difference is a bug — the Shortcuts app's output defines correct behavior, not assumptions or prior output.
+
+## Action Definition Workflow
+
+The full loop for adding a new action:
+
+1. Build the action in the Shortcuts app.
+2. Share via iCloud, download, and convert to XML (see above).
+3. Read the plist to extract the identifier and parameter keys.
+4. Write the definition — DSL for simple cases, Go for complex ones.
+5. Write a test `.cherri` file in `tests/`, compile with `--debug`, diff the output plist against the reference plist.
+
+### Reading a plist to write a definition
+
+A Shortcuts action in plist looks like:
+
+```xml
+<dict>
+    <key>WFWorkflowActionIdentifier</key>
+    <string>is.workflow.actions.gettext</string>
+    <key>WFWorkflowActionParameters</key>
+    <dict>
+        <key>WFTextActionText</key>
+        <string>hello</string>
+    </dict>
+</dict>
+```
+
+Map fields to the definition:
+
+| Plist field | Definition field | Rule |
+|---|---|---|
+| `is.workflow.actions.foo` | `identifier: "foo"` | Strip the standard prefix; it is auto-prepended |
+| `com.apple.App.Bar` | `appIdentifier: "com.apple.App"` + `identifier: "Bar"` | Non-standard prefix replaces `is.workflow.actions` |
+| Fully custom identifier | `overrideIdentifier: "..."` | Used verbatim, no prefix logic applies |
+| Each key in `WFWorkflowActionParameters` | `key` in `parameterDefinition` | The Cherri `name` can differ — `key` is what goes in the plist |
+| A parameter always present with a fixed value | `appendParams` map | Static keys go here, not as user-facing parameters |
+
+Parameters that vary by argument value but can't be expressed as simple pass-throughs need `makeParams` (Go only).
+
+### DSL definition (simple actions)
+
+Use the DSL in `actions/*.cherri` when every parameter is a direct value pass-through:
+
+```cherri
+// [Doc]: Get Text: Returns `text`.
+action 'gettext' getText(text text: 'WFTextActionText'): text
+```
+
+Syntax breakdown:
+
+- `'gettext'` — short identifier (appended after `is.workflow.actions.`); omit if the Cherri name lowercased already matches
+- `getText` — the Cherri call name; this becomes the key in the `actions` map
+- `text text: 'WFTextActionText'` — `type name: 'plistKey'`; omit `: 'plistKey'` when the name and plist key are identical
+- `: text` — output type; omit when the action produces no output
+
+Static parameters go in an inline dict block:
+
+```cherri
+action 'output' outputOrClipboard(text output: 'WFOutput') {
+    "WFNoOutputSurfaceBehavior": "Copy to Clipboard"
+}
+```
+
+### Go definition (complex actions)
+
+Use Go in `actions_std.go` when you need any of:
+
+- Custom parameter construction (`makeParams`) — the function receives `[]actionArgument` and returns `map[string]any`; it **fully replaces** automatic handling
+- Argument validation beyond type-checking (`check`)
+- Dynamic extra parameters without disabling automatic handling (`appendParamsFunc`)
+- Decompiler support (`decomp`)
+
+Minimal Go definition:
+
+```go
+"getText": {
+    parameters: []parameterDefinition{
+        {name: "text", validType: String, key: "WFTextActionText"},
+    },
+    outputType: String,
+},
+```
+
+Use `argumentValue(args, i)` or `paramValue(arg, type)` inside `makeParams` to convert collected arguments to plist values. Use `appendParamsFunc` instead of `makeParams` when you want automatic parameter handling to still apply but need to inject extra keys based on argument values.
