@@ -1,0 +1,32 @@
+// setBackgroundSound: default and explicit enum values
+setBackgroundSound()
+setBackgroundSound("RainOnRoof")
+setBackgroundSound("Ocean")
+
+// setBackgroundSounds: default and explicit boolean values
+setBackgroundSounds(true)
+setBackgroundSounds(false)
+toggleBackgroundSounds()
+
+// setMediaBackgroundSounds: default and explicit boolean values
+setMediaBackgroundSounds(true)
+setMediaBackgroundSounds(false)
+toggleMediaBackgroundSounds()
+
+// setBackgroundSoundsVolume: number argument
+setBackgroundSoundsVolume(15)
+
+// setTextSize: various enum sizes
+setTextSize("Extra Large")
+setTextSize("Accessibility Large")
+setTextSize("Small")
+
+// setSoundRecognition: default and explicit operations (!mac v18)
+setSoundRecognition()
+setSoundRecognition("pause")
+setSoundRecognition("toggle")
+
+// magnifier actions (!mac v18)
+magnifierDescribe()
+magnifierReader()
+magnifierPointAndSpeak()
