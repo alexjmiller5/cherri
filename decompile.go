@@ -957,7 +957,7 @@ func decompValueObject(value map[string]interface{}) string {
 			var variableName = value["VariableName"].(string)
 			sanitizeIdentifier(&variableName)
 
-			return variableName
+			return fmt.Sprintf("@%s", variableName)
 		}
 
 		var variableValue = value["Variable"].(map[string]interface{})
@@ -1047,6 +1047,8 @@ func decompAttachmentString(attachmentString *string, attachments map[string]int
 					variableName = name
 				}
 			}
+		} else {
+			variableName = fmt.Sprintf("@%s", variableName)
 		}
 
 		if len(attachment.Aggrandizements) != 0 {
