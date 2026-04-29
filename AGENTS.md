@@ -37,6 +37,157 @@ The `--debug` flag is essential during development: it prints parse state, outpu
 
 Code style: use `var x = ...` (not `:=`) except in `for`/`if`/`switch` init statements. Types are declared without values (`var x string`). Comments explain *why*, not *what*.
 
+## Language Syntax Basics
+
+> This is a brief reference for contributors. The [official docs](https://cherrilang.org/language/) (or `~/cherrilang.org/language/` locally) are the authoritative source.
+
+### Comments
+
+```ruby
+// single-line
+/* multi-line */
+comment('explicit comment action — always included in the Shortcut')
+```
+
+### Definitions
+
+```ruby
+#define name My Shortcut
+#define color blue
+#define glyph apple
+#define inputs image, text
+#define outputs file
+#define noinput stopwith "No input provided"
+#define from menubar, sharesheet
+#define mac true
+#define version 18.4
+```
+
+### Includes
+
+```ruby
+#include 'actions/scripting'   // standard library category
+#include 'path/to/file.cherri' // arbitrary file
+```
+
+Includes are resolved in `preParse()` before any tokenization.
+
+### Variables, Constants, Globals
+
+```ruby
+// Mutable variable — compiles to a "Set Variable" action
+@name = "value"
+@count = 0
+@count += 1    // also -=, *=, /=
+
+// Constant (magic variable) — references the action output directly, smaller Shortcut
+const result = someAction()
+
+// Type declaration with no initial value
+@builder: text
+@items: array
+
+// Globals (case-sensitive)
+@input = ShortcutInput
+@now   = CurrentDate
+@clip  = Clipboard
+@dev   = Device
+
+// Ask the user at runtime
+wait(Ask)
+wait(Ask: 'How many seconds?')
+```
+
+Mutable variables require `@` prefix when referenced inside inline strings: `"{@name}"`.
+
+### Types
+
+| Syntax | Type | Notes |
+|---|---|---|
+| `"hello {@var}"` | text | interpolates `{@var}` and escape sequences |
+| `'raw text'` | rawtext | no interpolation; not allowed in dicts/arrays |
+| `42` | number | |
+| `0.5` | float | |
+| `true` / `false` | bool | compiles to `1`/`0` |
+| `{"k": "v"}` | dictionary | valid JSON syntax |
+| `["a", "b"]` | array | valid JSON syntax |
+| `nil` | empty | skips optional arguments; faster than `""`, `[]`, `{}` |
+
+**Type declaration** (no initial value): `@x: text`, `@x: number`, `@x: array`, `@x: dictionary`, `@x: bool`, `@x: float`, `@x: variable`
+
+**Type coercion**: `@var.number`, `@var.text`, `"{@var.number}"`, or coercion actions (`number()`, `getDictionary()`)
+
+**Expressions** (arithmetic): `@result = 5 + (2 * @n)` — two-operand expressions compile to a Math action.
+
+**Enumerations**:
+```ruby
+enum Color { 'Red', 'Green', 'Blue' }
+```
+
+### Control Flow
+
+```ruby
+// If / else
+if @x > 0 {
+    // ...
+} else {
+    // ...
+}
+
+// Operators: == != > >= < <= contains !contains beginsWith endsWith <> (between)
+// Logical: && (all) || (any)
+// Has value: if @x { } / if !@x { }
+// Between: if @x <> 5 10 { }
+
+// Repeat N times (i is the index variable)
+repeat i for 6 {
+    @items += "Item {@i}"
+}
+
+// For-each
+@items = ["a","b","c"]
+for item in @items {
+    alert("@item")
+}
+
+// Control flow output (assign result to a constant)
+const result = if @x == "iPhone" {
+    getCellularDetail("Carrier Name")
+} else {
+    getWifiDetail("Network Name")
+}
+```
+
+### Functions
+
+```ruby
+// Definition
+function add(number op1, number op2): number {
+    const s = @op1 + @op2
+    output("{s}")
+}
+
+// Call
+const sum = add(2, 3)
+
+// Argument modifiers:
+//   text? message   — optional
+//   text! message   — literal value required (no variable)
+//   text message = "default"  — default value
+```
+
+Functions compile to a `runSelf` call with a dictionary; a generated header at the top of the Shortcut dispatches to the correct body. See **Functions Abstraction** below.
+
+### Actions
+
+```ruby
+alert("Hello!")                  // no include needed for basic actions
+#include 'actions/network'
+@data = getContentsOfURL("https://example.com")
+```
+
+Use `cherri --action=actionName` to look up a specific action's signature.
+
 ## Compilation Pipeline
 
 ```
@@ -129,6 +280,8 @@ The test runner calls `compile()` which calls `main()`, so `os.Args[1]` is set t
 `TestDecomp` is a diff test: it decompiles `tests/decomp-me.plist` and expects byte-for-byte equality with `tests/decomp-expected.cherri`. When decompiler output changes intentionally, regenerate the expected file.
 
 **Format correctness caveat:** `TestCherriNoSign` only verifies that compilation does not panic — it does not validate plist format. Shortcuts signing (`TestCherri` on macOS) will fail if the plist is structurally invalid, making it a stronger format check. Even a successful sign is not sufficient on its own: the resulting Shortcut must be manually opened and run in Shortcuts to confirm it behaves correctly. Automated tests cannot substitute for this manual verification step.
+
+**Required on macOS after compiler changes:** Any change that affects plist output (modifications to `shortcutgen.go`, `shortcut.go`, `action.go`, `actions_std.go`, or `actions/*.cherri`) must be verified by running `go test -run TestCherri` on macOS before the change is considered complete. The sign command is the only automated check that confirms the generated plist is structurally accepted by the Shortcuts runtime. `TestCherriNoSign` passing is not sufficient.
 
 **Sequential test isolation:** The test functions are not designed to run sequentially in the same process. The global `actions` map and related state accumulate across test functions, so running `go test` (all tests together) may produce failures that do not occur in CI. Always run tests individually with `-run`, matching how the GitLab pipeline executes them.
 
