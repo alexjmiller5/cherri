@@ -2224,7 +2224,7 @@ var toggleSetActions = map[string]actionDefinition{
 			title:    "Background Sounds",
 			category: "a11y",
 		},
-		appIdentifier: "com.apple.AccessibilityUtilities.AXSettingsShortcuts",
+		appIdentifier: "com.apple.UniversalAccess.AXSettingsShortcuts",
 		identifier:    "AXToggleBackgroundSoundsIntent",
 	},
 	"MediaBackgroundSounds": {
@@ -2232,7 +2232,7 @@ var toggleSetActions = map[string]actionDefinition{
 			title:    "Media Background Sounds",
 			category: "a11y",
 		},
-		appIdentifier: "com.apple.AccessibilityUtilities.AXSettingsShortcuts",
+		appIdentifier: "com.apple.UniversalAccess.AXSettingsShortcuts",
 		identifier:    "AXToggleBackgroundSoundsIntent",
 		appendParams: map[string]any{
 			"setting": "whenMediaIsPlaying",

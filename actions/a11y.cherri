@@ -6,16 +6,26 @@ enum backgroundSound {
 	'BalancedNoise',
 	'BrightNoise',
 	'DarkNoise',
-	'Ocean',
-	'Rain',
-	'Stream',
+    'Ocean',
+    'Rain',
+    'Stream',
+    'Babble',
+    'Steam',
+    'Airplane',
+    'Boat',
+    'Bus',
+    'Train',
+    'RainOnRoof',
+    'QuietNight',
+    'Fire',
+    'Night',
 }
 
 // [Doc]: Set Background Sound: Set the background sound that plays.
-action 'com.apple.AccessibilityUtilities.AXSettingsShortcuts.AXSetBackgroundSoundIntent' setBackgroundSound(backgroundSound ?sound: 'backgroundSound' = "BalancedNoise")
+action 'com.apple.UniversalAccess.UASettingsShortcuts.UASetBackgroundSoundIntent' setBackgroundSound(backgroundSound ?sound: 'backgroundSound' = "BalancedNoise")
 
 // [Doc]: Set Background Sound Volume
-action 'com.apple.AccessibilityUtilities.AXSettingsShortcuts.AXSetBackgroundSoundVolumeIntent' setBackgroundSoundsVolume(float volume: 'volumeValue')
+action 'com.apple.UniversalAccess.UASettingsShortcuts.UASetBackgroundSoundsVolumeIntent' setBackgroundSoundsVolume(number volume: 'volumeValue')
 
 enum textSizes {
 	'Accessibility Extra Extra Extra Large',
