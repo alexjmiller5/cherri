@@ -225,7 +225,7 @@ func resetParser() {
 	iconColor = -1263359489
 	iconGlyph = 61440
 	clientVersion = "900"
-	iosVersion = 16.5
+	iosVersion = 26.0
 	questions = map[string]*question{}
 	hasShortcutInputVariables = false
 	tabLevel = 0
