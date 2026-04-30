@@ -2168,4 +2168,3 @@ func decompInfiniteURLAction(action *ShortcutAction) (arguments []string) {
 
 	return
 }
-
